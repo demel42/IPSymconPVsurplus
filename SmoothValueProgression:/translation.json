@@ -1,7 +1,7 @@
 {
 	"translations": {
 		"de": {
-			"ModuleTemplate Device": "TestModule Device",
+			"Smooth value progression": "Werteverlauf glätten",
 
 			"__properties__": "",
 			"Disable instance": "Instanz deaktivieren",

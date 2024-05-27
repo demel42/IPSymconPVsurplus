@@ -1,0 +1,12 @@
+{
+	"id": "{32D89F9D-B2E6-D771-FDFC-BF312ED47258}",
+	"name": "SmoothValueProgression",
+	"type": 3,
+	"vendor": "",
+	"aliases": [],
+	"parentRequirements": [],
+	"childRequirements": [],
+	"implemented": [],
+	"prefix": "SmoothValueProgression",
+	"url": "https://github.com/demel42/IPSymconSmoothValueProgression/blob/master/README.md"
+}

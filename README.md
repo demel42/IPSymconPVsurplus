@@ -24,8 +24,8 @@
 
 ### a. Installation des Moduls
 
-Im [Module Store](https://www.symcon.de/service/dokumentation/komponenten/verwaltungskonsole/module-store/) ist das Modul unter dem Suchbegriff *ModuleTemplate* zu finden.<br>
-Alternativ kann das Modul über [Module Control](https://www.symcon.de/service/dokumentation/modulreferenz/module-control/) unter Angabe der URL `https://github.com/demel42/ModuleTemplate.git` installiert werden.
+Im [Module Store](https://www.symcon.de/service/dokumentation/komponenten/verwaltungskonsole/module-store/) ist das Modul unter dem Suchbegriff *SmoothValueProgression* zu finden.<br>
+Alternativ kann das Modul über [Module Control](https://www.symcon.de/service/dokumentation/modulreferenz/module-control/) unter Angabe der URL `https://github.com/demel42/SmoothValueProgression.git` installiert werden.
 
 ### b. Einrichtung in IPS
 
@@ -35,7 +35,7 @@ alle Funktionen sind über _RequestAction_ der jew. Variablen ansteuerbar
 
 ## 5. Konfiguration
 
-### ModuleTemplate Device
+### SmoothValueProgression
 
 #### Properties
 
@@ -60,9 +60,9 @@ Es werden folgende Variablenprofile angelegt:
 ## 6. Anhang
 
 ### GUIDs
-- Modul: `{0DCE4B6F-9176-DC9A-5502-1AF2B7573EB5}`
+- Modul: `{9F3F7954-0177-1168-C50A-2FCF67BDF5A9}`
 - Instanzen:
-  - ModuleTemplateDevice: `{B052AEAB-2687-02EB-DF40-74191E242A0B}`
+  - SmoothValueProgression: `{32D89F9D-B2E6-D771-FDFC-BF312ED47258}`
 - Nachrichten:
 
 ### Quellen

@@ -5,10 +5,10 @@ declare(strict_types=1);
 require_once __DIR__ . '/../libs/common.php';
 require_once __DIR__ . '/../libs/local.php';
 
-class ModuleTemplateDevice extends IPSModule
+class SmoothValueProgression extends IPSModule
 {
-    use ModuleTemplate\StubsCommonLib;
-    use ModuleTemplateLocalLib;
+    use SmoothValueProgression\StubsCommonLib;
+    use SmoothValueProgressionLocalLib;
 
     public function __construct(string $InstanceID)
     {
@@ -121,7 +121,7 @@ class ModuleTemplateDevice extends IPSModule
 
     private function GetFormElements()
     {
-        $formElements = $this->GetCommonFormElements('ModulTemplate Device');
+        $formElements = $this->GetCommonFormElements('Smooth value progression');
 
         if ($this->GetStatus() == self::$IS_UPDATEUNCOMPLETED) {
             return $formElements;
