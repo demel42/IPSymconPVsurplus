@@ -132,7 +132,7 @@ class SmoothValueProgression extends IPSModule
             $variableProfile = $var['VariableProfile'];
             $variableCustomProfile = $var['VariableCustomProfile'];
 
-            $this->MaintainVariable('Destination', 'smoothed value', $variableType, $variableProfile, $vpos++, true);
+            $this->MaintainVariable('Destination', $this->Translate('smoothed value'), $variableType, $variableProfile, $vpos++, true);
 
             $varID = $this->GetIDForIdent('Destination');
             IPS_SetVariableCustomProfile($varID, $variableCustomProfile);
