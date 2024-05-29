@@ -3,19 +3,25 @@
 		"de": {
 			"Smooth value progression": "Werteverlauf glätten",
 
+			"__function__": "CheckConfiguration",
+			"Source variable must be specified": "Quellvariable muss angegeben sein",
+			"Source variable must be logged with standard aggregation": "Quellvariable muss mit der Standardaggregation archiviert werden",
+
 			"__properties__": "",
 			"Disable instance": "Instanz deaktivieren",
 
-			"Update interval": "Aktualisierungsintervall",
+			"Source variable": "Quellvariable",
+			"Mode": "Modus",
+			"Interval between calculations": "Abstand zwischen Berechnungen",
+			"Number of values to be used": "Anzahl heranzuziehender Werte",
 			"Seconds": "Sekunden",
 
-			"Generate message when the gateway is inactive": "Meldung erzeugen wenn der Gateway inaktiv ist",
+			"Activate logging of smoothed variable": "Protokollierung der geglätteten Variablen aktivieren",
 
 			"__actions__": "",
-			"Update status": "Aktualisiere Status",
 
-			"__messages__": "",
-			"Instance has no active gateway": "Instanz hat keinen aktiven Gateway",
+			"__variables__": "",
+			"smoothed value": "geglätteter Wert",
 
 			"__end__": ""
 		}

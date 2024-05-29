@@ -1,6 +1,14 @@
 {
 	"translations": {
 		"de": {
+			"__options__": "Mode",
+			"unmodified": "unverändert",
+			"Average": "Mittelwert",
+			"Median": "Median",
+			"simple moving average": "einfacher gleitender Mittelwert",
+			"weighted moving average": "gewichteter gleitender Mittelwert",
+			"exponential moving average": "exponentiell gleitender Mittelwert",
+
 			"__end__": ""
 		}
 	}
