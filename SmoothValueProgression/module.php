@@ -12,6 +12,8 @@ class SmoothValueProgression extends IPSModule
 
     private static $semaphoreTM = 5 * 1000;
 
+    private $SemaphoreID;
+
     public function __construct(string $InstanceID)
     {
         parent::__construct($InstanceID);

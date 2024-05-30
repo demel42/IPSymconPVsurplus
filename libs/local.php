@@ -66,12 +66,12 @@ trait SmoothValueProgressionLocalLib
                 'value'   => self::$MODE_WEIGHTED_MOVING_AVERAGE,
                 'caption' => $this->Translate('weighted moving average'),
             ],
-			/*
+            /*
             [
                 'value'   => self::$MODE_EXPONENTIAL_MOVING_AVERAGE,
                 'caption' => $this->Translate('exponential moving average'),
             ],
-			*/
+             */
         ];
     }
 }
