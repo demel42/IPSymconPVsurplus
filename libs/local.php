@@ -43,35 +43,53 @@ trait SmoothValueProgressionLocalLib
         }
     }
 
-    private function ModeAsOptions()
+    private function ModeMapping()
     {
         return [
-            [
-                'value'   => self::$MODE_UNMODIFIED,
-                'caption' => $this->Translate('unmodified'),
+            self::$MODE_UNMODIFIED => [
+                'caption' => 'unmodified',
             ],
-            [
-                'value'   => self::$MODE_AVERAGE,
-                'caption' => $this->Translate('Average'),
+            self::$MODE_AVERAGE => [
+                'caption' => 'Average',
             ],
-            [
-                'value'   => self::$MODE_MEDIAN,
-                'caption' => $this->Translate('Median'),
+            self::$MODE_MEDIAN => [
+                'caption' => 'Median',
             ],
-            [
-                'value'   => self::$MODE_SIMPLE_MOVING_AVERAGE,
-                'caption' => $this->Translate('simple moving average'),
+            self::$MODE_SIMPLE_MOVING_AVERAGE => [
+                'caption' => 'simple moving average',
             ],
-            [
-                'value'   => self::$MODE_WEIGHTED_MOVING_AVERAGE,
-                'caption' => $this->Translate('weighted moving average'),
+            self::$MODE_WEIGHTED_MOVING_AVERAGE => [
+                'caption' => 'weighted moving average',
             ],
             /*
-            [
-                'value'   => self::$MODE_EXPONENTIAL_MOVING_AVERAGE,
-                'caption' => $this->Translate('exponential moving average'),
+            self::$MODE_EXPONENTIAL_MOVING_AVERAGE => [
+                'caption' => 'exponential moving average',
             ],
              */
         ];
+    }
+
+    private function ModeAsString($mode)
+    {
+        $maps = $this->ModeMapping();
+        if (isset($maps[$mode])) {
+            $ret = $this->Translate($maps[$mode]['caption']);
+        } else {
+            $ret = $this->Translate('Unknown mode') . ' ' . $mode;
+        }
+        return $ret;
+    }
+
+    private function ModeAsOptions()
+    {
+        $maps = $this->ModeMapping();
+        $opts = [];
+        foreach ($maps as $i => $e) {
+            $opts[] = [
+                'caption' => $e['caption'],
+                'value'   => $i,
+            ];
+        }
+        return $opts;
     }
 }

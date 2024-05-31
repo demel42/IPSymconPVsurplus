@@ -19,6 +19,11 @@
 			"Activate logging of smoothed variable": "Protokollierung der geglätteten Variablen aktivieren",
 
 			"__actions__": "",
+			"Start time": "Anfangszeitpunkt",
+            "End time": "Endzeitpunkt",
+            "(Re-)calculate archive data from the source variable": "(Neu-)Berechnung der Archivdaten aus der Quellvariable",
+            "This clears the values of destination variable and re-creates it from source variable":
+                "Dies löscht die Werte der Zielvariablen und erstellt sie neu aus der Quellvariablen",
 
 			"__variables__": "",
 			"smoothed value": "geglätteter Wert",
