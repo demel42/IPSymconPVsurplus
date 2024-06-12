@@ -1,15 +1,31 @@
 {
 	"translations": {
 		"de": {
-			"__options__": "Mode",
+			"__options__": "Method",
 			"unmodified": "unverändert",
-			"Average": "Mittelwert",
-			"Median": "Median",
 			"simple moving average": "einfacher gleitender Mittelwert",
 			"weighted moving average": "gewichteter gleitender Mittelwert",
-			"exponential moving average": "exponentiell gleitender Mittelwert",
+			"Unknown method": "Unbekannte Methode",
 
-			"Unknown mode": "Unbekannter Modus",
+			"__options__": "Trigger",
+			"on update": "bei Aktualisierung",
+			"on change": "bei Änderung",
+			"cyclic": "Zyklisch",
+			"Unknown trigger": "Unbekannter Auslöser",
+
+			"__variableprofile__": "PVsurplus.YesNo",
+			"yes": "ja",
+			"no": "nein",
+
+			"__variableprofile__": "PVsurplus.ChargePriority",
+			"Normal": "normal",
+			"High": "hoch",
+			"Low": "niedrig",
+			"None": "keine",
+
+			"__variableprofile__": "PVsurplus.SurplusUse",
+			"general": "allgemein",
+			"charge EV": "EV aufladen",
 
 			"__end__": ""
 		}

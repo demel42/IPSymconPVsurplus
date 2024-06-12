@@ -18,14 +18,14 @@
 
 ## 2. Voraussetzungen
 
-- IP-Symcon ab Version 6.0
+- IP-Symcon ab Version 7.0
 
 ## 3. Installation
 
 ### a. Installation des Moduls
 
-Im [Module Store](https://www.symcon.de/service/dokumentation/komponenten/verwaltungskonsole/module-store/) ist das Modul unter dem Suchbegriff *SmoothValueProgression* zu finden.<br>
-Alternativ kann das Modul über [Module Control](https://www.symcon.de/service/dokumentation/modulreferenz/module-control/) unter Angabe der URL `https://github.com/demel42/SmoothValueProgression.git` installiert werden.
+Im [Module Store](https://www.symcon.de/service/dokumentation/komponenten/verwaltungskonsole/module-store/) ist das Modul unter dem Suchbegriff *PV Surplus* zu finden.<br>
+Alternativ kann das Modul über [Module Control](https://www.symcon.de/service/dokumentation/modulreferenz/module-control/) unter Angabe der URL `https://github.com/demel42/IPSymconPVsurplus.git` installiert werden.
 
 ### b. Einrichtung in IPS
 
@@ -35,7 +35,7 @@ alle Funktionen sind über _RequestAction_ der jew. Variablen ansteuerbar
 
 ## 5. Konfiguration
 
-### SmoothValueProgression
+### PVsurplusDetermination
 
 #### Properties
 
@@ -62,12 +62,12 @@ Es werden folgende Variablenprofile angelegt:
 ### GUIDs
 - Modul: `{9F3F7954-0177-1168-C50A-2FCF67BDF5A9}`
 - Instanzen:
-  - SmoothValueProgression: `{32D89F9D-B2E6-D771-FDFC-BF312ED47258}`
+  - PVsurplusDetermination: `{32D89F9D-B2E6-D771-FDFC-BF312ED47258}`
 - Nachrichten:
 
 ### Quellen
 
 ## 7. Versions-Historie
 
-- 0.9 @ 30.05.2024 10:16 (testing)
+- 0.9 @ 03.06.2024 10:33 (testing)
   - Initiale Version

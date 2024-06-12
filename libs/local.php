@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-trait SmoothValueProgressionLocalLib
+trait PVsurplusLocalLib
 {
     private function GetFormStatus()
     {
@@ -29,60 +29,121 @@ trait SmoothValueProgressionLocalLib
         return $class;
     }
 
-    public static $MODE_UNMODIFIED = 0;
-    public static $MODE_AVERAGE = 1;
-    public static $MODE_MEDIAN = 2;
-    public static $MODE_SIMPLE_MOVING_AVERAGE = 3;
-    public static $MODE_WEIGHTED_MOVING_AVERAGE = 4;
-    public static $MODE_EXPONENTIAL_MOVING_AVERAGE = 5;
+    // Glättungsverfahren
+    public static $METHOD_UNMODIFIED = 0;
+    public static $METHOD_SIMPLE_MOVING_AVERAGE = 1;
+    public static $METHOD_WEIGHTED_MOVING_AVERAGE = 2;
+
+    // Auslösung
+    public static $TRIGGER_UPDATE = 0;
+    public static $TRIGGER_CHANGE = 1;
+    public static $TRIGGER_CYCLIC = 2;
+
+    // Lade-Priorität
+    public static $CHARGE_PRIORITY_NORMAL = 0;
+    public static $CHARGE_PRIORITY_HIGH = 1;
+    public static $CHARGE_PRIORITY_LOW = 2;
+    public static $CHARGE_PRIORITY_NONE = 3;
+
+    // Verwendung des Überschusses
+    public static $SURPLUS_USE_GENERAL = 0;
+    public static $SURPLUS_USE_EV = 1;
 
     private function InstallVarProfiles(bool $reInstall = false)
     {
         if ($reInstall) {
             $this->SendDebug(__FUNCTION__, 'reInstall=' . $this->bool2str($reInstall), 0);
         }
+
+        $associations = [
+            ['Wert' => false, 'Name' => $this->Translate('no'), 'Farbe' => -1],
+            ['Wert' => true, 'Name' => $this->Translate('yes'), 'Farbe' => -1],
+        ];
+        $this->CreateVarProfile('PVsurplus.YesNo', VARIABLETYPE_BOOLEAN, '', 0, 0, 0, 1, '', $associations, $reInstall);
+
+        $associations = [
+            ['Wert' => self::$CHARGE_PRIORITY_NORMAL, 'Name' => $this->Translate('Normal'), 'Farbe' => -1],
+            ['Wert' => self::$CHARGE_PRIORITY_HIGH, 'Name' => $this->Translate('High'), 'Farbe' => -1],
+            ['Wert' => self::$CHARGE_PRIORITY_LOW, 'Name' => $this->Translate('Low'), 'Farbe' => -1],
+            ['Wert' => self::$CHARGE_PRIORITY_NONE, 'Name' => $this->Translate('None'), 'Farbe' => -1],
+        ];
+        $this->CreateVarProfile('PVsurplus.ChargePriority', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, '', $associations, $reInstall);
+
+        $associations = [
+            ['Wert' => self::$SURPLUS_USE_GENERAL, 'Name' => $this->Translate('general'), 'Farbe' => -1],
+            ['Wert' => self::$SURPLUS_USE_EV, 'Name' => $this->Translate('charge EV'), 'Farbe' => -1],
+        ];
+        $this->CreateVarProfile('PVsurplus.SurplusUse', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, '', $associations, $reInstall);
     }
 
-    private function ModeMapping()
+    private function MethodMapping()
     {
         return [
-            self::$MODE_UNMODIFIED => [
+            self::$METHOD_UNMODIFIED => [
                 'caption' => 'unmodified',
             ],
-            self::$MODE_AVERAGE => [
-                'caption' => 'Average',
-            ],
-            self::$MODE_MEDIAN => [
-                'caption' => 'Median',
-            ],
-            self::$MODE_SIMPLE_MOVING_AVERAGE => [
+            self::$METHOD_SIMPLE_MOVING_AVERAGE => [
                 'caption' => 'simple moving average',
             ],
-            self::$MODE_WEIGHTED_MOVING_AVERAGE => [
+            self::$METHOD_WEIGHTED_MOVING_AVERAGE => [
                 'caption' => 'weighted moving average',
             ],
-            /*
-            self::$MODE_EXPONENTIAL_MOVING_AVERAGE => [
-                'caption' => 'exponential moving average',
-            ],
-             */
         ];
     }
 
-    private function ModeAsString($mode)
+    private function MethodAsString($val)
     {
-        $maps = $this->ModeMapping();
-        if (isset($maps[$mode])) {
-            $ret = $this->Translate($maps[$mode]['caption']);
+        $maps = $this->MethodMapping();
+        if (isset($maps[$val])) {
+            $ret = $this->Translate($maps[$val]['caption']);
         } else {
-            $ret = $this->Translate('Unknown mode') . ' ' . $mode;
+            $ret = $this->Translate('Unknown methode') . ' ' . $val;
         }
         return $ret;
     }
 
-    private function ModeAsOptions()
+    private function MethodAsOptions()
     {
-        $maps = $this->ModeMapping();
+        $maps = $this->MethodMapping();
+        $opts = [];
+        foreach ($maps as $i => $e) {
+            $opts[] = [
+                'caption' => $e['caption'],
+                'value'   => $i,
+            ];
+        }
+        return $opts;
+    }
+
+    private function TriggerMapping()
+    {
+        return [
+            self::$TRIGGER_UPDATE => [
+                'caption' => 'on update',
+            ],
+            self::$TRIGGER_CHANGE => [
+                'caption' => 'on change',
+            ],
+            self::$TRIGGER_CYCLIC => [
+                'caption' => 'cyclic',
+            ],
+        ];
+    }
+
+    private function TriggerAsString($val)
+    {
+        $maps = $this->TriggerMapping();
+        if (isset($maps[$val])) {
+            $ret = $this->Translate($maps[$val]['caption']);
+        } else {
+            $ret = $this->Translate('Unknown trigger') . ' ' . $val;
+        }
+        return $ret;
+    }
+
+    private function TriggerAsOptions()
+    {
+        $maps = $this->TriggerMapping();
         $opts = [];
         foreach ($maps as $i => $e) {
             $opts[] = [

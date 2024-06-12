@@ -1,0 +1,66 @@
+{
+	"translations": {
+		"de": {
+			"Determination of the usable PV surplus": "Bestimmung des nutzbaren PV-Überschusses",
+
+			"__function__": "CheckConfiguration",
+			"Source variable must be specified": "Quellvariable muss angegeben sein",
+			"Source variable must be logged with standard aggregation": "Quellvariable muss mit der Standardaggregation archiviert werden",
+
+			"__properties__": "",
+			"Disable instance": "Instanz deaktivieren",
+
+			"Variable of the net grid power": "Variable der saldierten Netzleistung",
+			"Unit": "Einheit",
+			"Invert source": "Quelle invertieren",
+			"Surplus ist positive": "Überschuss ist positiv",
+			"Surplus ist negative": "Überschuss ist negativ",
+			"Smoothing method": "Glättungsverfahren",
+			"Number of pre-values to be used for each value": "Anzahl für jeden Wert heranzuziehender Vorwerte",
+			"Trigger": "Auslöser",
+			"Interval between calculations": "Abstand zwischen Berechnungen",
+			"Seconds": "Sekunden",
+
+			"Activate logging of smoothed surplus": "Geglättete Überschussleistung loggen",
+
+            "PV storage": "PV-Speicher",
+			"Variable of PV storage SoC": "Variable des PV-Speicher-Ladezustands",
+			"% (value range from 0..1)": "% (Wertebereich von 0..1)",
+			"% (value range from 0..100)": "% (Wertebereich von 0..100)",
+
+			"Up to SoC of": "Bis zum Ladezustand von",
+			"Normal priority": "Normale Priorität",
+			"High priority": "Hohe Priorität",
+			"Low priority": "Niedrige Priorität",
+			"Reserved power for storage charging": "Reservierte Leistung zur Speicherladung",
+
+			"Variable of current storage discharge": "Variable der aktuellen Speicherentladung",
+
+            "Wallbox": "Wallbox",
+			"Supported number of phases": "Unterstützte Anzahl der Phasen",
+			"Minimal current": "Minimale Stromstärke",
+			"Maximal current": "Maximale Stromstärke",
+			"Variable of the current number of phases used": "Variable der aktuellen Anzahl verwendeter Phasen",
+			"Variable of actual power": "Variable der aktuellen Ladeleistung",
+
+			"Activate logging of usable surplus": "Verwendbare Überschussleistung loggen",
+
+			"Hysteresis": "Hysterese",
+
+			"__actions__": "",
+			"Start time": "Anfangszeitpunkt",
+            "End time": "Endzeitpunkt",
+            "(Re-)calculate archive data from the source variable": "(Neu-)Berechnung der Archivdaten aus der Quellvariable",
+            "This clears the values of destination variable and re-creates it from source variable":
+                "Dies löscht die Werte der Zielvariablen und erstellt sie neu aus der Quellvariablen",
+
+			"__variables__": "",
+			"Smoothed surplus power": "Geglättete Überschussleistung",
+			"Usable surplus power": "Verwendbare Überschussleistung",
+			"Priority of charging the storage": "Priorität der Aufladung des Speichers",
+			"Use of the PV surplus": "Verwendung des PV-Überschusses",
+
+			"__end__": ""
+		}
+	}
+}

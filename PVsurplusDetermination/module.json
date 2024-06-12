@@ -1,12 +1,12 @@
 {
 	"id": "{32D89F9D-B2E6-D771-FDFC-BF312ED47258}",
-	"name": "SmoothValueProgression",
+	"name": "PV surplus determination",
 	"type": 3,
 	"vendor": "",
 	"aliases": [],
 	"parentRequirements": [],
 	"childRequirements": [],
 	"implemented": [],
-	"prefix": "SmoothValueProgression",
-	"url": "https://github.com/demel42/IPSymconSmoothValueProgression/blob/master/README.md"
+	"prefix": "PVsurplus",
+	"url": "https://github.com/demel42/IPSymconPVsurplus/blob/master/README.md"
 }
