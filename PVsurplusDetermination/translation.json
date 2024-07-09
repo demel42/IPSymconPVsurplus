@@ -45,7 +45,20 @@
 
 			"Activate logging of usable surplus": "Verwendbare Überschussleistung loggen",
 
-			"Hysteresis": "Hysterese",
+			"Provide power from the storage/grid for a certain period of time if the power falls below the minimum required surplus power":
+				"Bereitstellen von Leistung aus dem Speicher/Netz für eine bestimmte Zeit, wenn die minimal erforderliche Überschussleistung unterschritten wird",
+			"if the minimum number of phases is already in use": "wenn bereits die Mindestanzahl der Phasen verwendet wird",
+			"(then the charging process pauses)": "(danach pausiert der Ladevorgang)",
+			"if number of phases can be reduced": "wenn die Anzahl der Phasen reduziert werden kann",
+			"(then fewer phases are used)": "(danach werden weniger Phasen verwendet)",
+			"Maximum power from the storage": "Maximale Leistung aus dem Speicher",
+			"Maximal duration": "Maximale Dauer",
+			"Minutes": "Minuten",
+			"Minimal SoC of storage": "Minimaler Ladezustand des Speichers",
+			"Increase the number of phases only if additional surplus power is available for a certain duration": 
+				"Erhöhung der Anzahl der Phasen nur, wenn für eine bestimmte Dauer zusätzliche Überschussleistung vorhanden ist",
+			"Minimal surplus power": "Minimale Überschussleistung",
+			"Minimal duration": "Minimale Dauer",
 
 			"__actions__": "",
 			"Start time": "Anfangszeitpunkt",

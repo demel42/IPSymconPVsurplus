@@ -48,18 +48,25 @@ class PVsurplusDetermination extends IPSModule
         $this->RegisterPropertyString('storage_charging_power', json_encode([]));
         $this->RegisterPropertyInteger('storage_discharge_varID', 0);
         $this->RegisterPropertyInteger('storage_discharge_unit', 1);
-        $this->RegisterPropertyInteger('hysteresis', 0);
         $this->RegisterPropertyBoolean('log_usable', true);
 
         $this->RegisterPropertyInteger('storage_charge_varID', 0);
         $this->RegisterPropertyInteger('storage_charge_unit', 1);
 
-        $this->RegisterPropertyString('ev_supported_phases', '1');
+        $this->RegisterPropertyString('ev_supported_phases', json_encode([1]));
         $this->RegisterPropertyInteger('ev_phases_varID', 0);
         $this->RegisterPropertyInteger('ev_current_min', 6);
         $this->RegisterPropertyInteger('ev_current_max', 16);
         $this->RegisterPropertyInteger('ev_actual_power_varID', 0);
         $this->RegisterPropertyInteger('ev_actual_power_unit', 1);
+
+        $this->RegisterPropertyInteger('ev_undercut_maxPower_base', 1000);
+        $this->RegisterPropertyInteger('ev_undercut_maxPower_next', 500);
+        $this->RegisterPropertyInteger('ev_undercut_maxDuration_base', 30);
+        $this->RegisterPropertyInteger('ev_undercut_maxDuration_next', 10);
+        $this->RegisterPropertyInteger('ev_undercut_minSoC', 80);
+        $this->RegisterPropertyInteger('ev_overflow_minPower', 500);
+        $this->RegisterPropertyInteger('ev_overflow_minDuration', 10);
 
         $this->RegisterAttributeString('UpdateInfo', json_encode([]));
         $this->RegisterAttributeString('ModuleStats', json_encode([]));
@@ -307,16 +314,7 @@ class PVsurplusDetermination extends IPSModule
                 ],
                 [
                     'type'     => 'Select',
-                    'options'  => [
-                        [
-                            'caption' => 'W',
-                            'value'   => 1,
-                        ],
-                        [
-                            'caption' => 'kW',
-                            'value'   => 1000, /* multiply by 1000 */
-                        ],
-                    ],
+                    'options'  => $this->UnitWattAsOptions(),
                     'name'     => 'source_unit',
                     'caption'  => 'Unit',
                 ],
@@ -408,16 +406,7 @@ class PVsurplusDetermination extends IPSModule
                         ],
                         [
                             'type'     => 'Select',
-                            'options'  => [
-                                [
-                                    'caption' => '% (value range from 0..1)',
-                                    'value'   => 100, /* multiply by 100 */
-                                ],
-                                [
-                                    'caption' => '% (value range from 0..100)',
-                                    'value'   => 1,
-                                ],
-                            ],
+                            'options'  => $this->UnitPrecentAsOptions(),
                             'name'     => 'storage_soc_unit',
                             'caption'  => 'Unit',
                         ],
@@ -499,18 +488,224 @@ class PVsurplusDetermination extends IPSModule
                         ],
                         [
                             'type'     => 'Select',
-                            'options'  => [
-                                [
-                                    'caption' => 'W',
-                                    'value'   => 1,
-                                ],
-                                [
-                                    'caption' => 'kW',
-                                    'value'   => 1000, /* multiply by 1000 */
-                                ],
-                            ],
+                            'options'  => $this->UnitWattAsOptions(),
                             'name'     => 'storage_discharge_unit',
                             'caption'  => 'Unit',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $items = [
+            [
+                'type'     => 'Select',
+                'options'  => [
+                    [
+                        'caption' => '1',
+                        'value'   => json_encode([1]),
+                    ],
+                    [
+                        'caption' => '2',
+                        'value'   => json_encode([2]),
+                    ],
+                    [
+                        'caption' => '3',
+                        'value'   => json_encode([3]),
+                    ],
+                    [
+                        'caption' => '1/2',
+                        'value'   => json_encode([1, 2]),
+                    ],
+                    [
+                        'caption' => '1/3',
+                        'value'   => json_encode([1, 3]),
+                    ],
+                    [
+                        'caption' => '1/2/3',
+                        'value'   => json_encode([1, 2, 3]),
+                    ],
+                ],
+                'name'     => 'ev_supported_phases',
+                'caption'  => 'Supported number of phases',
+            ],
+            [
+                'type'    => 'NumberSpinner',
+                'name'    => 'ev_current_min',
+                'suffix'  => 'W',
+                'minimum' => 0,
+                'caption' => 'Minimal current',
+            ],
+            [
+                'type'    => 'NumberSpinner',
+                'name'    => 'ev_current_max',
+                'suffix'  => 'W',
+                'minimum' => 0,
+                'caption' => 'Maximal current',
+            ],
+            [
+                'type'               => 'SelectVariable',
+                'name'               => 'ev_phases_varID',
+                'validVariableTypes' => [VARIABLETYPE_INTEGER],
+                'width'              => '600px',
+                'caption'            => 'Variable of the current number of phases used',
+            ],
+            [
+                'type'    => 'RowLayout',
+                'items'   => [
+                    [
+                        'type'               => 'SelectVariable',
+                        'name'               => 'ev_actual_power_varID',
+                        'validVariableTypes' => [VARIABLETYPE_FLOAT],
+                        'width'              => '600px',
+                        'caption'            => 'Variable of actual power',
+                    ],
+                    [
+                        'type'     => 'Select',
+                        'options'  => $this->UnitWattAsOptions(),
+                        'name'     => 'ev_actual_power_unit',
+                        'caption'  => 'Unit',
+                    ],
+                ],
+            ],
+        ];
+
+        $items[] = [
+            'type'    => 'ColumnLayout',
+            'items'   => [
+                [
+                    'type'    => 'Label',
+                ],
+                [
+                    'type'    => 'Label',
+                    'caption' => 'Provide power from the storage/grid for a certain period of time if the power falls below the minimum required surplus power',
+                ],
+                [
+                    'type'    => 'RowLayout',
+                    'items'   => [
+                        [
+                            'type'    => 'ColumnLayout',
+                            'items'   => [
+                                [
+                                    'type'    => 'Label',
+                                    'width'   => '10px',
+                                ],
+                                [
+                                    'type'    => 'Label',
+                                    'width'   => '10px',
+                                ],
+                            ],
+                        ],
+                        [
+                            'type'    => 'ColumnLayout',
+                            'items'   => [
+                                [
+                                    'type'    => 'Label',
+                                    'caption' => $this->Translate('if the minimum number of phases is already in use') . PHP_EOL . $this->Translate('(then the charging process pauses)'),
+                                ],
+                                [
+                                    'type'    => 'Label',
+                                    'caption' => $this->Translate('if number of phases can be reduced') . PHP_EOL . $this->Translate('(then fewer phases are used)'),
+                                ],
+                            ],
+                        ],
+                        [
+                            'type'    => 'ColumnLayout',
+                            'items'   => [
+                                [
+                                    'type'    => 'Label',
+                                    'width'   => '10px',
+                                ],
+                                [
+                                    'type'    => 'Label',
+                                    'width'   => '10px',
+                                ],
+                            ],
+                        ],
+                        [
+                            'type'    => 'ColumnLayout',
+                            'items'   => [
+                                [
+                                    'type'    => 'NumberSpinner',
+                                    'name'    => 'ev_undercut_maxPower_base',
+                                    'suffix'  => 'W',
+                                    'minimum' => 0,
+                                    'caption' => 'Maximum power from the storage',
+                                ],
+                                [
+                                    'type'    => 'NumberSpinner',
+                                    'name'    => 'ev_undercut_maxPower_next',
+                                    'suffix'  => 'W',
+                                    'minimum' => 0,
+                                    'caption' => 'Maximum power from the storage',
+                                ],
+                            ],
+                        ],
+                        [
+                            'type'    => 'ColumnLayout',
+                            'items'   => [
+                                [
+                                    'type'    => 'NumberSpinner',
+                                    'name'    => 'ev_undercut_maxDuration_base',
+                                    'suffix'  => 'Minutes',
+                                    'minimum' => 0,
+                                    'caption' => 'Maximal duration',
+                                ],
+                                [
+                                    'type'    => 'NumberSpinner',
+                                    'name'    => 'ev_undercut_maxDuration_next',
+                                    'suffix'  => 'Minutes',
+                                    'minimum' => 0,
+                                    'caption' => 'Maximal duration',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'type'    => 'RowLayout',
+                    'items'   => [
+                        [
+                            'type'    => 'Label',
+                            'width'   => '10px',
+                        ],
+                        [
+                            'type'    => 'NumberSpinner',
+                            'name'    => 'ev_undercut_minSoC',
+                            'suffix'  => '%',
+                            'minimum' => 0,
+                            'maximum' => 100,
+                            'caption' => 'Minimal SoC of storage',
+                        ],
+                    ],
+                ],
+                [
+                    'type'    => 'Label',
+                ],
+                [
+                    'type'    => 'Label',
+                    'caption' => 'Increase the number of phases only if additional surplus power is available for a certain duration',
+                ],
+                [
+                    'type'    => 'RowLayout',
+                    'items'   => [
+                        [
+                            'type'    => 'Label',
+                            'width'   => '10px',
+                        ],
+                        [
+                            'type'    => 'NumberSpinner',
+                            'name'    => 'ev_overflow_minPower',
+                            'suffix'  => 'W',
+                            'minimum' => 0,
+                            'caption' => 'Minimal surplus power',
+                        ],
+                        [
+                            'type'    => 'NumberSpinner',
+                            'name'    => 'ev_overflow_minDuration',
+                            'suffix'  => 'Minutes',
+                            'minimum' => 0,
+                            'caption' => 'Minimal duration',
                         ],
                     ],
                 ],
@@ -521,87 +716,7 @@ class PVsurplusDetermination extends IPSModule
             'type'      => 'ExpansionPanel',
             'caption'   => 'Wallbox',
             'expanded'  => false,
-            'items'     => [
-                [
-                    'type'     => 'Select',
-                    'options'  => [
-                        [
-                            'caption' => '1',
-                            'value'   => '1',
-                        ],
-                        [
-                            'caption' => '1/2',
-                            'value'   => '1/2',
-                        ],
-                        [
-                            'caption' => '1/2/3',
-                            'value'   => '1/2/3',
-                        ],
-                        [
-                            'caption' => '1/3',
-                            'value'   => '1/3',
-                        ],
-                    ],
-                    'name'     => 'ev_supported_phases',
-                    'caption'  => 'Supported number of phases',
-                ],
-                [
-                    'type'    => 'NumberSpinner',
-                    'name'    => 'ev_current_min',
-                    'suffix'  => 'W',
-                    'minimum' => 0,
-                    'caption' => 'Minimal current',
-                ],
-                [
-                    'type'    => 'NumberSpinner',
-                    'name'    => 'ev_current_max',
-                    'suffix'  => 'W',
-                    'minimum' => 0,
-                    'caption' => 'Maximal current',
-                ],
-                [
-                    'type'               => 'SelectVariable',
-                    'name'               => 'ev_phases_varID',
-                    'validVariableTypes' => [VARIABLETYPE_INTEGER],
-                    'width'              => '600px',
-                    'caption'            => 'Variable of the current number of phases used',
-                ],
-                [
-                    'type'    => 'RowLayout',
-                    'items'   => [
-                        [
-                            'type'               => 'SelectVariable',
-                            'name'               => 'ev_actual_power_varID',
-                            'validVariableTypes' => [VARIABLETYPE_FLOAT],
-                            'width'              => '600px',
-                            'caption'            => 'Variable of actual power',
-                        ],
-                        [
-                            'type'     => 'Select',
-                            'options'  => [
-                                [
-                                    'caption' => 'W',
-                                    'value'   => 1,
-                                ],
-                                [
-                                    'caption' => 'kW',
-                                    'value'   => 1000, /* multiply by 1000 */
-                                ],
-                            ],
-                            'name'     => 'ev_actual_power_unit',
-                            'caption'  => 'Unit',
-                        ],
-                    ],
-                ],
-            ],
-        ];
-
-        $formElements[] = [
-            'type'    => 'NumberSpinner',
-            'name'    => 'hysteresis',
-            'suffix'  => 'W',
-            'minimum' => 0,
-            'caption' => 'Hysteresis',
+            'items'     => $items,
         ];
 
         $formElements[] = [
@@ -785,7 +900,7 @@ class PVsurplusDetermination extends IPSModule
         }
     }
 
-    public function SurplusUse(int $surplusUse)
+    public function SetSurplusUse(int $surplusUse)
     {
         $this->SendDebug(__FUNCTION__, 'surplusUse=' . $surplusUse, 0);
 
@@ -1184,12 +1299,12 @@ class PVsurplusDetermination extends IPSModule
             $storage_discharge = 0;
         }
 
-        $this->SendDebug(__FUNCTION__, 'smoothed_surplus=' . $smoothed_surplus . 'W, storage_discharge=' . $storage_discharge . 'W', 0);
+        $this->SendDebug(__FUNCTION__, 'smoothed_surplus=' . $smoothed_surplus . 'W, discharge=' . $storage_discharge . 'W', 0);
 
         $storage_soc_varID = $this->ReadPropertyInteger('storage_soc_varID');
         $storage_soc_unit = $this->ReadPropertyInteger('storage_soc_unit');
 
-        $charge_reduce = 0;
+        $reserved4storage = 0;
         if (IPS_VariableExists($storage_soc_varID)) {
             $charge_priority = $this->GetValue('ChargePriority');
             if ($charge_priority != self::$CHARGE_PRIORITY_NONE) {
@@ -1206,13 +1321,13 @@ class PVsurplusDetermination extends IPSModule
                         if ($soc_limit > $storage_soc) {
                             switch ($charge_priority) {
                                 case self::$CHARGE_PRIORITY_NORMAL:
-                                    $charge_reduce = $ent['normal'];
+                                    $reserved4storage = $ent['normal'];
                                     break;
                                 case self::$CHARGE_PRIORITY_HIGH:
-                                    $charge_reduce = $ent['high'];
+                                    $reserved4storage = $ent['high'];
                                     break;
                                 case self::$CHARGE_PRIORITY_LOW:
-                                    $charge_reduce = $ent['low'];
+                                    $reserved4storage = $ent['low'];
                                     break;
                                 default:
                                     break;
@@ -1221,35 +1336,37 @@ class PVsurplusDetermination extends IPSModule
                         }
                     }
                     $charge_priority_s = GetValueFormatted($this->GetIDForIdent('ChargePriority'));
-                    $this->SendDebug(__FUNCTION__, 'soc=' . $storage_soc . '%, priority=' . $charge_priority_s . ' => charge_reduce=' . $charge_reduce . 'W', 0);
+                    $this->SendDebug(__FUNCTION__, 'soc=' . $storage_soc . '%, priority=' . $charge_priority_s . ' => reserved=' . $reserved4storage . 'W', 0);
                 }
             }
         }
 
-        $ev_supported_phases = $this->ReadPropertyString('ev_supported_phases');
-        $ev_current_min = $this->ReadPropertyInteger('ev_current_min');
-        $ev_current_max = $this->ReadPropertyInteger('ev_current_max');
-        $ev_phases_varID = $this->ReadPropertyInteger('ev_phases_varID');
+        if ($surplusUse == self::$SURPLUS_USE_EV) {
+            $ev_supported_phases = @json_decode($this->ReadPropertyString('ev_supported_phases'), true);
+            $ev_current_min = $this->ReadPropertyInteger('ev_current_min');
+            $ev_current_max = $this->ReadPropertyInteger('ev_current_max');
+            $ev_phases_varID = $this->ReadPropertyInteger('ev_phases_varID');
 
-        $ev_actual_power_varID = $this->ReadPropertyInteger('ev_actual_power_varID');
-        $ev_actual_power_unit = $this->ReadPropertyInteger('ev_actual_power_unit');
+            $ev_actual_power_varID = $this->ReadPropertyInteger('ev_actual_power_varID');
+            $ev_actual_power_unit = $this->ReadPropertyInteger('ev_actual_power_unit');
 
-        if (IPS_VariableExists($ev_actual_power_varID)) {
-            $ev_actual_power = round(GetValueFloat($ev_actual_power_varID) * $ev_actual_power_unit);
-            $this->SendDebug(__FUNCTION__, 'ev_actual_power=' . $ev_actual_power . 'W', 0);
-        } else {
-            $ev_actual_power = 0;
+            if (IPS_VariableExists($ev_actual_power_varID)) {
+                $ev_actual_power = round(GetValueFloat($ev_actual_power_varID) * $ev_actual_power_unit);
+                $this->SendDebug(__FUNCTION__, 'ev_actual_power=' . $ev_actual_power . 'W', 0);
+            } else {
+                $ev_actual_power = 0;
+            }
+
+            if (IPS_VariableExists($ev_phases_varID)) {
+                $ev_phases = GetValueInteger($ev_phases_varID);
+
+                $power_min = $ev_phases * $ev_current_min * 230;
+                $power_max = $ev_phases * $ev_current_max * 230;
+                $this->SendDebug(__FUNCTION__, 'ev_phases=' . $ev_phases . ', power=' . $power_min . 'W..' . $power_max . 'W', 0);
+            }
         }
 
-        if (IPS_VariableExists($ev_phases_varID)) {
-            $ev_phases = GetValueInteger($ev_phases_varID);
-
-            $power_min = $ev_phases * $ev_current_min * 230;
-            $power_max = $ev_phases * $ev_current_max * 230;
-            $this->SendDebug(__FUNCTION__, 'ev_phases=' . $ev_phases . ', power=' . $power_min . 'W..' . $power_max . 'W', 0);
-        }
-
-        $usable_surplus = max($smoothed_surplus - $storage_discharge - $charge_reduce, 0);
+        $usable_surplus = max($smoothed_surplus - $storage_discharge - $reserved4storage, 0);
 
         $this->SendDebug(__FUNCTION__, 'set "' . 'UsableSurplusPower' . '" to ' . $usable_surplus, 0);
         $this->SetValue('UsableSurplusPower', $usable_surplus);
@@ -1257,5 +1374,33 @@ class PVsurplusDetermination extends IPSModule
         $this->MaintainTimer('CalcSurplus', 0);
 
         IPS_SemaphoreLeave($this->SemaphoreID);
+    }
+
+    private function UnitWattAsOptions()
+    {
+        return [
+            [
+                'caption' => 'W',
+                'value'   => 1,
+            ],
+            [
+                'caption' => 'kW',
+                'value'   => 1000, /* multiply by 1000 */
+            ],
+        ];
+    }
+
+    private function UnitPrecentAsOptions()
+    {
+        return [
+            [
+                'caption' => '% (value range from 0..1)',
+                'value'   => 100, /* multiply by 100 */
+            ],
+            [
+                'caption' => '% (value range from 0..100)',
+                'value'   => 1,
+            ],
+        ];
     }
 }
